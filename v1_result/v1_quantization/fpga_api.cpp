@@ -68,10 +68,14 @@ const int *__attribute__((optimize("O0"))) FPGA::qblockMV(Compute* comp)
 {
   num_block_call_ += 1;
 
+printf("block mv called\n");
+
   // fpga version
   *output_ = 0x5555;
   while (*output_ == 0x5555)
     ;
+
+printf("get done\n");
 
   return qdata_;
 }
@@ -93,12 +97,24 @@ void FPGA::largeMV(const float *large_mat, const float *input, float *output, in
   int act_offset = (-comp->act_min)/act_scale;
   quantize(input, qinput, num_input, act_bits_min, act_bits_max, 0, act_scale);
 
+for(int i=0; i<num_input; i++)
+	printf("%d ", qinput[i]);
+printf("\n");
+
   int weight_bits_min = 0;
   int weight_bits_max = (1<<(comp->weight_bits-1))-1;
 
   float weight_scale = (comp->weight_max-comp->weight_min)/(weight_bits_max-weight_bits_min);
   int weight_offset = (-comp->weight_min)/weight_scale;
   quantize(large_mat, qlarge_mat, num_input*num_output, weight_bits_min, weight_bits_max, 0, weight_scale);
+
+for(int i=0; i<num_input; i++){
+	for(int j=0; j<num_output; j++)
+		printf("%d ", qlarge_mat[i*num_output+j]);
+	printf("\n");
+	}
+printf("\n");
+
 
   // 0) Initialize output vector
   for (int i = 0; i < num_output; ++i)

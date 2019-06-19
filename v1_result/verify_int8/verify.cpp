@@ -19,7 +19,7 @@ int main(void)
 	int* output_fpga = new int[N];
 
 	for(int i = 0 ; i < M*(N+1) ; ++i)
-		flat[i] = 0;
+		flat[i] = ((int)rand())%255-128;
 
 	// computation
 	for (int i = 0; i < N; i++)		
